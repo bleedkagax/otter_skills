@@ -62,6 +62,7 @@ User request: $ARGUMENTS
 ## Guidelines
 
 - **Always `--gap 1 --padding-x 0`** — default padding wastes screen space
+- **Use English labels** — CJK characters (中文等) cause box misalignment (upstream bug)
 - **Use `\n` not `<br/>`** for multi-line labels: `A["line1\nline2"]` (`<br/>` renders as literal text)
 - Prefer `graph LR` over `graph TD` for fewer lines; flowchart TD ≤6 nodes
 - `mindmap` is the most compact for hierarchical info

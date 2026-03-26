@@ -95,6 +95,7 @@ See [references/mermaid-syntax.md](references/mermaid-syntax.md) for full syntax
 
 ## Known Limitations
 
+- **CJK characters misalign boxes**: termaid uses `len()` for width calculation — CJK chars (中文/日文/韓文) occupy 2 terminal columns but are counted as 1, causing boxes to be too narrow and text to overflow. **Workaround: use English labels**, or accept visual misalignment with CJK text.
 - **`<br/>` not supported**: termaid renders `<br/>` as literal text. Use `\n` inside double-quoted labels instead: `A["line1\nline2"]`
 - **Dim lines on some themes**: `default` and `neon` use ANSI dim attribute for connection lines, which appears faint on many terminals. Use `amber` or `phosphor` for bold lines.
 - **Min vertical padding**: Each node has 1-line forced internal padding above and below text (not configurable)
