@@ -25,8 +25,8 @@ User request: $ARGUMENTS
    <mermaid syntax here>
    EOF
 
-   # With color
-   FORCE_COLOR=1 uvx --from "termaid[rich]" termaid --gap 1 --padding-x 0 --theme neon <<'EOF'
+   # With color (amber/phosphor have bold lines; neon/default have dim/faint lines)
+   FORCE_COLOR=1 uvx --from "termaid[rich]" termaid --gap 1 --padding-x 0 --theme amber <<'EOF'
    <mermaid syntax here>
    EOF
    ```
@@ -62,9 +62,11 @@ User request: $ARGUMENTS
 ## Guidelines
 
 - **Always `--gap 1 --padding-x 0`** — default padding wastes screen space
+- **Use `\n` not `<br/>`** for multi-line labels: `A["line1\nline2"]` (`<br/>` renders as literal text)
 - Prefer `graph LR` over `graph TD` for fewer lines; flowchart TD ≤6 nodes
 - `mindmap` is the most compact for hierarchical info
 - Keep node labels to 2-3 words
 - `--gap`/`--padding-x` only affect flowchart/sequence/class/ER/block
-- Color themes: `default` `terra` `neon` `mono` `amber` `phosphor` `gruvbox` `monokai` `dracula` `nord` `solarized`
+- Color: prefer `amber`/`phosphor` (bold lines); avoid `neon`/`default` (dim/faint lines)
+- Available themes: `default` `terra` `neon` `mono` `amber` `phosphor`
 - If Python < 3.11 error, add `--python 3.11` after `uvx`

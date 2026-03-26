@@ -29,8 +29,8 @@ EOF
 # File input
 uvx termaid --gap 1 --padding-x 0 diagram.mmd
 
-# With color
-FORCE_COLOR=1 uvx --from "termaid[rich]" termaid --gap 1 --padding-x 0 --theme neon <<'EOF'
+# With color (amber/phosphor recommended — bold lines, high contrast)
+FORCE_COLOR=1 uvx --from "termaid[rich]" termaid --gap 1 --padding-x 0 --theme amber <<'EOF'
 ...
 EOF
 ```
@@ -40,20 +40,17 @@ EOF
 Color requires the `rich` extra. Use `--from "termaid[rich]"` with uvx:
 
 ```bash
-# Basic color (in real terminal, colors render automatically)
-uvx --from "termaid[rich]" termaid --theme neon <<'EOF'
-graph TD; A --> B --> C
-EOF
-
-# Force color in non-TTY contexts (pipes, subprocesses, CI, Claude Code Bash tool)
-FORCE_COLOR=1 uvx --from "termaid[rich]" termaid --theme neon <<'EOF'
-graph TD; A --> B --> C
+# Force color in non-TTY contexts (pipes, CI, agent tools)
+FORCE_COLOR=1 uvx --from "termaid[rich]" termaid --theme amber <<'EOF'
+graph LR; A --> B --> C
 EOF
 ```
 
-**When to use `FORCE_COLOR=1`**: Rich auto-detects TTY and suppresses color when stdout is captured (pipes, CI logs, Claude Code Bash tool). Set `FORCE_COLOR=1` to force ANSI output regardless. The raw escape codes (`[1;35m` etc.) will appear in non-terminal contexts but render as actual colors in a real terminal.
+**`FORCE_COLOR=1`**: Rich suppresses color when stdout is not a TTY (pipes, CI, agent tools). Set this env var to force ANSI output.
 
-Available themes: `default`, `terra`, `neon`, `mono`, `amber`, `phosphor`, `gruvbox`, `monokai`, `dracula`, `nord`, `solarized`.
+**Theme selection**: `default` and `neon` use dim lines (`[2;` ANSI) — faint on many terminals. Prefer **`amber`** or **`phosphor`** which use bold + 24-bit RGB for higher contrast.
+
+Available themes (via `uvx termaid`): `default`, `terra`, `neon`, `mono`, `amber`, `phosphor`.
 
 ## Diagram Type Selection
 
@@ -96,11 +93,18 @@ See [references/mermaid-syntax.md](references/mermaid-syntax.md) for full syntax
 | `--demo [TYPE]` | Render sample diagrams (`all`, `flowchart`, `sequence`, etc.) |
 | `--show-ids` | Show node IDs alongside labels for debugging |
 
+## Known Limitations
+
+- **`<br/>` not supported**: termaid renders `<br/>` as literal text. Use `\n` inside double-quoted labels instead: `A["line1\nline2"]`
+- **Dim lines on some themes**: `default` and `neon` use ANSI dim attribute for connection lines, which appears faint on many terminals. Use `amber` or `phosphor` for bold lines.
+- **Min vertical padding**: Each node has 1-line forced internal padding above and below text (not configurable)
+
 ## Tips
 
 - **Always use `--gap 1 --padding-x 0`** — default padding wastes screen space
+- **Use `\n` not `<br/>`** for multi-line labels: `A["line1\nline2"]`
 - Keep node labels concise (2-3 words)
 - Flowchart TD: ≤6 nodes to fit one screen; use LR for longer chains
 - `mindmap` is the most compact for hierarchical structures
 - `--gap`/`--padding-x` only affect flowchart/sequence/class/ER/block
-- termaid auto-fits to terminal width; use `--no-auto-fit` to disable
+- Prefer `amber`/`phosphor` theme over `neon`/`default` for better line visibility

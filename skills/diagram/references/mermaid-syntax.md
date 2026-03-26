@@ -14,6 +14,7 @@ Node shapes:
 A[Rectangle]    A(Rounded)    A{Diamond}    A([Stadium])
 A[[Subroutine]] A((Circle))   A>Asymmetric]  A{{Hexagon}}
 A[(Cylinder)]   A(((Double circle)))
+A["Multi-line\nlabel"]    (use \n, NOT <br/> — termaid renders <br/> as literal text)
 ```
 
 Edge styles:
