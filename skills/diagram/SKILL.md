@@ -80,32 +80,42 @@ See [references/mermaid-syntax.md](references/mermaid-syntax.md) for full syntax
 
 | Flag | Effect |
 |---|---|
-| `--ascii` | ASCII-only output (no Unicode box-drawing) |
+| `--ascii` | ASCII-only output (+---+ boxes, > arrows). Works on all terminals |
 | `--gap N` | Space between nodes (default 4). Only affects flowchart/sequence/class/ER/block |
 | `--padding-x N` | Horizontal padding inside boxes (default 4). Same scope as `--gap` |
-| `--padding-y N` | Vertical padding inside boxes (default 2) |
-| `--width N` | Max output width; auto-compacts with smaller gap/padding if exceeded |
-| `--no-auto-fit` | Disable automatic compaction when diagram exceeds terminal width |
-| `--sharp-edges` | Sharp corners on edge routing turns instead of rounded |
-| `--theme NAME` | Color theme (requires `pip install termaid[rich]`). Use `--themes` to list all |
-| `--tui` | Interactive TUI viewer (requires `pip install termaid[tui]`) |
-| `-o FILE` | Write output to file instead of stdout |
+| `--width N` | Max width ceiling; auto-compacts if diagram exceeds N (not a forced width) |
+| `--theme NAME` | Color theme (requires `--from "termaid[rich]"`). Use `--themes` to list |
 | `--demo [TYPE]` | Render sample diagrams (`all`, `flowchart`, `sequence`, etc.) |
-| `--show-ids` | Show node IDs alongside labels for debugging |
+| `-o FILE` | Write output to file instead of stdout |
 
 ## Known Limitations
 
-- **CJK characters misalign boxes**: termaid uses `len()` for width calculation — CJK chars (中文/日文/韓文) occupy 2 terminal columns but are counted as 1, causing boxes to be too narrow and text to overflow. **Workaround: use English labels**, or accept visual misalignment with CJK text.
-- **`<br/>` not supported**: termaid renders `<br/>` as literal text. Use `\n` inside double-quoted labels instead: `A["line1\nline2"]`
-- **Dim lines on some themes**: `default` and `neon` use ANSI dim attribute for connection lines, which appears faint on many terminals. Use `amber` or `phosphor` for bold lines.
-- **Min vertical padding**: Each node has 1-line forced internal padding above and below text (not configurable)
+- **CJK characters misalign boxes**: termaid uses `len()` for width — CJK chars occupy 2 columns but counted as 1. **Workaround: use English labels** (PR submitted to fix upstream).
+- **RL direction mirrors text**: `graph RL` renders node labels reversed (e.g. "Start" → "tratS"). **Avoid `graph RL`**; use `graph LR` instead.
+- **`<br/>` not supported**: renders as literal text. Use `\n` in double-quoted labels: `A["line1\nline2"]`
+- **HTML entities break rendering**: `&amp;`, `&quot;` etc. corrupt output. Use raw chars (`&`, `<`, `>`) directly.
+- **Edge styles not differentiated**: bidirectional (`<-->`), dotted (`-.->`) and thick (`==>`) edges may look identical to normal arrows.
+- **Dim lines on some themes**: `default`/`neon` use ANSI dim attribute. Use `amber`/`phosphor` for bold lines.
+- **`--width N` is a ceiling, not a target**: diagrams render at natural size if narrower than N. Does not force compression.
+- **`--padding-y 0` and `--sharp-edges` are no-ops**: no visible effect in terminal rendering.
+- **Min vertical padding**: 1-line forced internal padding above/below text (not configurable).
+
+## Tested Capacity
+
+Verified via 100-test stress suite:
+- Flowchart: up to 10 nodes TD, 8 nodes LR
+- Sequence: up to 8 participants
+- Mindmap: up to 20+ nodes across 4 levels
+- All other types: standard complexity renders cleanly
 
 ## Tips
 
 - **Always use `--gap 1 --padding-x 0`** — default padding wastes screen space
 - **Use `\n` not `<br/>`** for multi-line labels: `A["line1\nline2"]`
+- **Use raw chars** (`&`, `<`, `>`) in labels — never HTML entities
+- **Avoid `graph RL`** — text mirrors bug; use `graph LR` instead
 - Keep node labels concise (2-3 words)
 - Flowchart TD: ≤6 nodes to fit one screen; use LR for longer chains
 - `mindmap` is the most compact for hierarchical structures
 - `--gap`/`--padding-x` only affect flowchart/sequence/class/ER/block
-- Prefer `amber`/`phosphor` theme over `neon`/`default` for better line visibility
+- Prefer `amber`/`phosphor` theme over `neon`/`default` for line visibility

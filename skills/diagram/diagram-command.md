@@ -62,12 +62,14 @@ User request: $ARGUMENTS
 ## Guidelines
 
 - **Always `--gap 1 --padding-x 0`** — default padding wastes screen space
-- **Use English labels** — CJK characters (中文等) cause box misalignment (upstream bug)
-- **Use `\n` not `<br/>`** for multi-line labels: `A["line1\nline2"]` (`<br/>` renders as literal text)
+- **Use English labels** — CJK chars cause box misalignment (upstream bug, PR submitted)
+- **Use `\n` not `<br/>`** for multi-line labels: `A["line1\nline2"]`
+- **Use raw chars** (`&`, `<`, `>`) — never HTML entities (`&amp;` etc. break rendering)
+- **Avoid `graph RL`** — text mirrors bug; use `graph LR` instead
 - Prefer `graph LR` over `graph TD` for fewer lines; flowchart TD ≤6 nodes
 - `mindmap` is the most compact for hierarchical info
 - Keep node labels to 2-3 words
 - `--gap`/`--padding-x` only affect flowchart/sequence/class/ER/block
-- Color: prefer `amber`/`phosphor` (bold lines); avoid `neon`/`default` (dim/faint lines)
-- Available themes: `default` `terra` `neon` `mono` `amber` `phosphor`
+- `--width N` is a ceiling, not forced — diagrams render at natural size if narrower
+- Color: prefer `amber`/`phosphor` (bold lines); avoid `neon`/`default` (dim lines)
 - If Python < 3.11 error, add `--python 3.11` after `uvx`
