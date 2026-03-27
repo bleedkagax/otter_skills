@@ -12,7 +12,12 @@ If the default Python is < 3.11, use `uvx --python 3.11 termaid` (or 3.12/3.13).
 ## Workflow
 
 1. Determine the best diagram type from user request or code context
-2. **Language adapt**: always generate **English labels** in diagrams regardless of user's input language (CJK chars misalign boxes). Respond in the user's language around the diagram.
+2. **Language adapt** — smart bilingual strategy:
+   - **Node labels**: English term on first line + optional native annotation on second line via `\n`: `A["Quality Gate\n(质量门控)"]`. Add annotation for key/ambiguous terms; skip for obvious ones (Start, End, Yes/No).
+   - **Edge labels**: English only — short, no room for bilingual.
+   - **Title/root nodes**: bilingual: `R["Two-Stage Prompt\n(两阶段提示词)"]`
+   - **Response text** around the diagram: user's language.
+   - The `\n` annotation pattern works because termaid sizes boxes to the longer (English) first line, so CJK on the second line stays inside the box.
 3. Generate valid Mermaid syntax
 4. Render via pipe to termaid
 5. If output is too wide, re-render with compact options
@@ -42,18 +47,52 @@ Color requires the `rich` extra. Use `--from "termaid[rich]"` with uvx:
 
 ```bash
 # Force color in non-TTY contexts (pipes, CI, agent tools)
-FORCE_COLOR=1 uvx --from "termaid[rich]" termaid --theme amber <<'EOF'
+FORCE_COLOR=1 uvx --from "termaid[rich]" termaid --gap 1 --padding-x 0 --theme amber <<'EOF'
 graph LR; A --> B --> C
 EOF
 ```
 
 **`FORCE_COLOR=1`**: Rich suppresses color when stdout is not a TTY (pipes, CI, agent tools). Set this env var to force ANSI output.
 
-**Theme selection**: `default` and `neon` use dim lines (`[2;` ANSI) — faint on many terminals. Prefer **`amber`** or **`phosphor`** which use bold + 24-bit RGB for higher contrast.
+### Theme Comparison
 
-Available themes (via `uvx termaid`): `default`, `terra`, `neon`, `mono`, `amber`, `phosphor`.
+Available themes: `default`, `terra`, `neon`, `mono`, `amber`, `phosphor`.
 
-**Mac terminal tips**: Use a monospace font with good Unicode box-drawing support (Menlo, SF Mono, JetBrains Mono). Set line spacing to 1.0 (not 1.2+) to prevent gaps in vertical lines. iTerm2 renders better than Terminal.app for complex diagrams.
+| Theme | Borders | Edges | Arrows | Verdict |
+|---|---|---|---|---|
+| `default` | normal cyan | **dim** white `[2;37m` | bold yellow | Edges invisible on dark bg |
+| `neon` | bold magenta | **dim** cyan `[2;36m` | bold green | Edges faint on dark bg |
+| `mono` | bold white | **dim** (no color) `[2m` | bold white | Edges nearly invisible |
+| `terra` | bold 24-bit terracotta | 24-bit muted brown | bold 24-bit salmon | Warm, muted -- good |
+| **`amber`** | **bold 24-bit(255,176,0)** | 24-bit(128,96,0) | **bold 24-bit(255,208,128)** | **Best contrast** |
+| `phosphor` | bold 24-bit(51,255,51) | 24-bit(26,140,26) | bold 24-bit(102,255,102) | High contrast, retro |
+
+**Recommendation**: Use **`amber`** (highest luminance on dark backgrounds, all elements use bold or 24-bit RGB, no dim codes). `phosphor` is a good alternative for a retro green look. Avoid `default`/`neon`/`mono` -- they use ANSI dim (`[2;`) for edge lines, which are nearly invisible on most dark terminal themes.
+
+## Mac Terminal Setup
+
+**Font**: Use a monospace font with full Unicode box-drawing support:
+- **SF Mono** (ships with macOS) -- best overall for Terminal.app and iTerm2
+- **Menlo** (ships with macOS) -- good fallback
+- **JetBrains Mono** -- excellent if installed
+
+**Line spacing**: Set to **1.0** (not 1.2+). Extra line spacing creates visible gaps in vertical box-drawing characters.
+
+**Terminal app**:
+- **iTerm2** (recommended) -- better 24-bit color and Unicode support for complex diagrams
+- **Terminal.app** -- works for basic diagrams; set Profiles > Advanced > "Unicode East Asian Ambiguous characters are wide" to off
+
+**Theme**: Use **`amber`** for dark backgrounds (most Mac users). All borders and arrows use bold + 24-bit RGB with no dim codes, giving maximum visibility.
+
+**Quick test** -- verify your setup renders correctly:
+```bash
+FORCE_COLOR=1 uvx --python 3.11 --from "termaid[rich]" termaid --gap 1 --padding-x 0 --theme amber <<'EOF'
+graph TD
+    A[Start] --> B{OK?}
+    B -->|Yes| C[Done]
+    B -->|No| D[Retry]
+EOF
+```
 
 ## Diagram Type Selection
 
@@ -88,9 +127,101 @@ Available themes (via `uvx termaid`): `default`, `terra`, `neon`, `mono`, `amber
 - This gives ~45 lines per stage, readable in one screen
 - Example: `R[Title] --> A[Step1]` then `A -->|details| A1["Line1\nLine2\nLine3"]`
 
+## Complex Diagrams
+
+When a diagram exceeds comfortable single-screen rendering, split it into an **index diagram** plus **sub-diagrams**. Each part is rendered as a separate `uvx termaid` call.
+
+### Complexity Thresholds (when to split)
+
+| Diagram Type | Split When | Reason |
+|---|---|---|
+| Flowchart TD | > 6 nodes | ~5 lines/node; 7+ nodes > 35 lines |
+| Flowchart LR | > 5 nodes (short labels) or > 4 nodes (long labels) | Overflows 80-col at ~10 chars/node x 6 |
+| Sequence | > 6 participants | Columns compress; labels overlap |
+| Mindmap | > 15 labels total | Branches push off-screen |
+| Class/ER | > 6 entities | Relationship lines become unreadable |
+| State | > 8 states | Transition arrows cross heavily |
+
+### Index Diagram Pattern
+
+Render a simple overview first showing the split structure. Use `graph LR` with `[N/M]` part labels:
+
+```mermaid
+graph LR; S1["[1/2] Extract\nMemories"] --> S2["[2/2] Update\nMemory Store"]
+```
+
+Rules:
+- Always `graph LR` -- the index should be a compact horizontal strip
+- Each node = one sub-diagram, labeled `[N/M]` where N = part number, M = total parts
+- Keep to 2-4 parts maximum; if you need 5+, simplify the content instead
+- Node labels: 2-3 words + `\n` for a second line if needed
+
+### Sub-diagram Cross-referencing
+
+Print a text header before each sub-diagram render to anchor context:
+
+```
+**[1/2] Extract Memories**
+<render sub-diagram 1>
+
+**[2/2] Update Memory Store**
+<render sub-diagram 2>
+```
+
+Each sub-diagram is self-contained (no cross-refs in the Mermaid syntax itself). The `[N/M]` labels in index + text headers provide the linkage.
+
+### Terminal Width Awareness
+
+Choose direction based on content shape and terminal width (~80 cols default):
+
+| Content Shape | Direction | Why |
+|---|---|---|
+| Linear chain, <=5 short-label nodes | `graph LR` | Fits in one row; fewest lines |
+| Linear chain, 6+ nodes or long labels | `graph TD` | Avoids horizontal overflow |
+| Branching/decision tree | `graph TD` | Branches fan out naturally downward |
+| Wide comparison (parallel paths) | `graph LR` | Side-by-side paths read left-to-right |
+| Index/overview | `graph LR` | Always compact horizontal strip |
+
+Rule of thumb: each LR node costs ~(label_width + 6) chars of width. If `nodes x avg_cost > 75`, switch to TD.
+
+### Full Example: mem0 Two-Stage Prompt
+
+**Index:**
+```bash
+uvx termaid --gap 1 --padding-x 0 <<'EOF'
+graph LR; S1["[1/2] Extract\nMemories"] --> S2["[2/2] Update\nMemory Store"]
+EOF
+```
+
+**[1/2] Extract Memories** (TD -- has branching):
+```bash
+uvx termaid --gap 1 --padding-x 0 <<'EOF'
+graph TD
+    A["User Message\n+ Chat History"] --> B["LLM Call #1\nExtract Facts"]
+    B --> C{"Memories\nFound?"}
+    C -->|Yes| D["Return List\nof Memories"]
+    C -->|No| E["Return Empty"]
+EOF
+```
+
+**[2/2] Update Memory Store** (TD -- has 3-way branch):
+```bash
+uvx termaid --gap 1 --padding-x 0 <<'EOF'
+graph TD
+    A["Extracted\nMemories"] --> B{"For Each\nMemory"}
+    B -->|New| C["ADD to\nVector Store"]
+    B -->|Exists| D["UPDATE\nExisting"]
+    B -->|Contradicts| E["DELETE Old\n+ ADD New"]
+    C --> F["Done"]
+    D --> F
+    E --> F
+EOF
+```
+
 ## Syntax Quick Reference
 
 See [references/mermaid-syntax.md](references/mermaid-syntax.md) for full syntax of all 10 diagram types.
+See [references/templates.md](references/templates.md) for 6 ready-to-use scenario templates with rendered output.
 
 ## CLI Options
 
@@ -106,7 +237,7 @@ See [references/mermaid-syntax.md](references/mermaid-syntax.md) for full syntax
 
 ## Known Limitations
 
-- **CJK characters misalign boxes**: termaid uses `len()` for width — CJK chars occupy 2 columns but counted as 1. **Workaround: use English labels** (PR submitted to fix upstream).
+- **CJK characters misalign boxes**: termaid uses `len()` for width — CJK chars occupy 2 columns but counted as 1. **Workaround: use English on the first line, CJK only as `\n`-annotation on second line** — box sizes to the English line so alignment is preserved (PR submitted to fix upstream).
 - **RL direction mirrors text**: `graph RL` renders node labels reversed (e.g. "Start" → "tratS"). **Avoid `graph RL`**; use `graph LR` instead.
 - **`<br/>` not supported**: renders as literal text. Use `\n` in double-quoted labels: `A["line1\nline2"]`
 - **HTML entities break rendering**: `&amp;`, `&quot;` etc. corrupt output. Use raw chars (`&`, `<`, `>`) directly.
