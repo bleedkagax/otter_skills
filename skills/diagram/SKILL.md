@@ -74,14 +74,14 @@ Available themes: `default`, `terra`, `neon`, `mono`, `amber`, `phosphor`.
 
 **Recommendation by background**:
 - **Dark terminal** → `amber` (gold on dark = highest contrast)
-- **Light terminal** → `terra` (warm brown on white = best readability)
-- Avoid `default`/`neon`/`mono` — they use ANSI dim (`[2;`) for edges, nearly invisible.
+- **Light terminal** → **no color theme** (plain black text on white = max contrast). All 6 themes use bright/light colors designed for dark backgrounds — they're nearly invisible on white.
 
-**Auto-detect script** (macOS): `scripts/termaid-render.sh` detects system dark/light mode and selects the best theme automatically:
+**Auto-detect script** (macOS): `scripts/termaid-render.sh` detects system dark/light mode automatically:
 ```bash
 echo 'graph LR; A --> B' | bash scripts/termaid-render.sh
-# Dark mode → amber, Light mode → terra
-# Override: TERMAID_THEME=phosphor bash scripts/termaid-render.sh
+# Dark mode → amber with color, Light mode → plain (no color)
+# Override: TERMAID_THEME=amber bash scripts/termaid-render.sh
+# Force plain: TERMAID_THEME=none bash scripts/termaid-render.sh
 ```
 
 ## Mac Terminal Setup

@@ -111,5 +111,5 @@ When a diagram would exceed these thresholds, **auto-split** into index + sub-di
 - Keep node labels to 2-3 words (flowchart), ≤15 chars (mindmap)
 - `--gap`/`--padding-x` only affect flowchart/sequence/class/ER/block
 - `--width N` is a ceiling, not forced — diagrams render at natural size if narrower
-- Color: dark terminal → `amber`, light terminal → `terra`; avoid `neon`/`default` (dim lines)
+- Color: dark terminal → `amber`; light terminal → no theme (plain black = max contrast)
 - If Python < 3.11 error, add `--python 3.11` after `uvx`
