@@ -34,8 +34,8 @@ User request: $ARGUMENTS
    <mermaid syntax here>
    EOF
 
-   # With color (amber/phosphor have bold lines; neon/default have dim/faint lines)
-   FORCE_COLOR=1 uvx --from "termaid[rich]" termaid --gap 1 --padding-x 0 --theme amber <<'EOF'
+   # With color (dark terminal → amber, light → terra)
+   FORCE_COLOR=1 uvx --python 3.11 --from "termaid[rich]" termaid --gap 1 --padding-x 0 --theme amber <<'EOF'
    <mermaid syntax here>
    EOF
    ```
@@ -111,5 +111,5 @@ When a diagram would exceed these thresholds, **auto-split** into index + sub-di
 - Keep node labels to 2-3 words (flowchart), ≤15 chars (mindmap)
 - `--gap`/`--padding-x` only affect flowchart/sequence/class/ER/block
 - `--width N` is a ceiling, not forced — diagrams render at natural size if narrower
-- Color: prefer `amber`/`phosphor` (bold lines); avoid `neon`/`default` (dim lines)
+- Color: dark terminal → `amber`, light terminal → `terra`; avoid `neon`/`default` (dim lines)
 - If Python < 3.11 error, add `--python 3.11` after `uvx`

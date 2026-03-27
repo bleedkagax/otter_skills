@@ -35,8 +35,13 @@ EOF
 # File input
 uvx termaid --gap 1 --padding-x 0 diagram.mmd
 
-# With color (amber/phosphor recommended — bold lines, high contrast)
-FORCE_COLOR=1 uvx --from "termaid[rich]" termaid --gap 1 --padding-x 0 --theme amber <<'EOF'
+# With color (auto-detect dark/light on macOS)
+bash scripts/termaid-render.sh <<'EOF'
+...
+EOF
+
+# Or manual: amber for dark, terra for light
+FORCE_COLOR=1 uvx --python 3.11 --from "termaid[rich]" termaid --gap 1 --padding-x 0 --theme amber <<'EOF'
 ...
 EOF
 ```
@@ -67,7 +72,17 @@ Available themes: `default`, `terra`, `neon`, `mono`, `amber`, `phosphor`.
 | **`amber`** | **bold 24-bit(255,176,0)** | 24-bit(128,96,0) | **bold 24-bit(255,208,128)** | **Best contrast** |
 | `phosphor` | bold 24-bit(51,255,51) | 24-bit(26,140,26) | bold 24-bit(102,255,102) | High contrast, retro |
 
-**Recommendation**: Use **`amber`** (highest luminance on dark backgrounds, all elements use bold or 24-bit RGB, no dim codes). `phosphor` is a good alternative for a retro green look. Avoid `default`/`neon`/`mono` -- they use ANSI dim (`[2;`) for edge lines, which are nearly invisible on most dark terminal themes.
+**Recommendation by background**:
+- **Dark terminal** → `amber` (gold on dark = highest contrast)
+- **Light terminal** → `terra` (warm brown on white = best readability)
+- Avoid `default`/`neon`/`mono` — they use ANSI dim (`[2;`) for edges, nearly invisible.
+
+**Auto-detect script** (macOS): `scripts/termaid-render.sh` detects system dark/light mode and selects the best theme automatically:
+```bash
+echo 'graph LR; A --> B' | bash scripts/termaid-render.sh
+# Dark mode → amber, Light mode → terra
+# Override: TERMAID_THEME=phosphor bash scripts/termaid-render.sh
+```
 
 ## Mac Terminal Setup
 
