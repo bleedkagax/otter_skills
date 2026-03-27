@@ -32,21 +32,27 @@ for v in 3.13 3.12 3.11; do
     fi
 done
 
-# Light mode colorizer: colored lines + black text (no termaid source changes)
+# Light mode colorizer: multi-color lines + black text (no termaid source changes)
+# 5 colors by structural role, text stays terminal default (black)
 colorize_lines() {
     python3 -c "
 import sys
-COLOR = '\033[38;2;30;120;200m'   # steel blue for lines
-RESET = '\033[0m'
-BOX = set('┌┐└┘├┤┬┴─│◇◯▼►◄▲╭╮╰╯┆┼◉●━┃┄')
+R = '\033[0m'
+C = {
+    'border':  '\033[38;2;30;100;180m',   # deep blue — box borders
+    'arrow':   '\033[38;2;200;80;30m',    # warm orange — arrow heads
+    'line':    '\033[38;2;100;130;160m',   # muted blue-gray — vertical lines
+    'special': '\033[38;2;130;60;160m',   # purple — diamonds, circles
+    'dash':    '\033[38;2;40;140;80m',    # forest green — dashed lines
+}
+MAP = {}
+for ch in '┌┐└┘├┤┬┴─╭╮╰╯┼': MAP[ch] = C['border']
+for ch in '▼►◄▲→←↑↓':       MAP[ch] = C['arrow']
+for ch in '│┆┃':             MAP[ch] = C['line']
+for ch in '◇◯◉●■✖':         MAP[ch] = C['special']
+for ch in '┄':               MAP[ch] = C['dash']
 for line in sys.stdin:
-    out = []
-    for ch in line:
-        if ch in BOX:
-            out.append(COLOR + ch + RESET)
-        else:
-            out.append(ch)
-    sys.stdout.write(''.join(out))
+    sys.stdout.write(''.join(MAP[ch] + ch + R if ch in MAP else ch for ch in line))
 "
 }
 
