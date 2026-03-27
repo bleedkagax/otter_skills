@@ -16,9 +16,13 @@ User request: $ARGUMENTS
    - **treemap** (`treemap-beta`) - hierarchical data with sizes
    - **mindmap** (`mindmap`) - hierarchical brainstorming/structure
 
-2. Generate valid Mermaid syntax for the diagram
+2. **Always use English labels** in the diagram regardless of user's input language (CJK chars cause box misalignment). Respond in the user's language around the diagram.
 
-3. Render using heredoc pipe. **Always use `--gap 1 --padding-x 0`** for compact output:
+3. Generate valid Mermaid syntax. For complex multi-branch content, use vertical chain pattern:
+   - Main flow down left column: `A --> B --> C`
+   - Each step fans out one detail node right: `A -->|details| A1["Line1\nLine2"]`
+
+4. Render using heredoc pipe. **Always use `--gap 1 --padding-x 0`** for compact output:
    ```bash
    # Compact render (recommended default)
    uvx termaid --gap 1 --padding-x 0 <<'EOF'
@@ -31,7 +35,7 @@ User request: $ARGUMENTS
    EOF
    ```
 
-4. If output is still too large:
+5. If output is still too large:
    - Use `--width 80` for explicit width limit
    - Switch to `graph LR` (horizontal) — far fewer lines than `graph TD`
    - Use `mindmap` for hierarchical overviews — highest information density

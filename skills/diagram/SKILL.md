@@ -12,9 +12,10 @@ If the default Python is < 3.11, use `uvx --python 3.11 termaid` (or 3.12/3.13).
 ## Workflow
 
 1. Determine the best diagram type from user request or code context
-2. Generate valid Mermaid syntax
-3. Render via pipe to termaid
-4. If output is too wide, re-render with compact options
+2. **Language adapt**: always generate **English labels** in diagrams regardless of user's input language (CJK chars misalign boxes). Respond in the user's language around the diagram.
+3. Generate valid Mermaid syntax
+4. Render via pipe to termaid
+5. If output is too wide, re-render with compact options
 
 ## Rendering
 
@@ -52,6 +53,8 @@ EOF
 
 Available themes (via `uvx termaid`): `default`, `terra`, `neon`, `mono`, `amber`, `phosphor`.
 
+**Mac terminal tips**: Use a monospace font with good Unicode box-drawing support (Menlo, SF Mono, JetBrains Mono). Set line spacing to 1.0 (not 1.2+) to prevent gaps in vertical lines. iTerm2 renders better than Terminal.app for complex diagrams.
+
 ## Diagram Type Selection
 
 | User Intent | Type | Header |
@@ -75,8 +78,15 @@ Available themes (via `uvx termaid`): `default`, `terra`, `neon`, `mono`, `amber
 **Mindmap label rules** (critical — long labels cause chaotic layout):
 - **Max ~15 chars per label** — mindmap does NOT wrap text; long labels push branches off-screen
 - Use short codes/abbreviations: `Evidence rules` not `必须引用具体原话 + anti-injection 防护`
-- If content needs long descriptions, use flowchart TD with subgraphs instead of mindmap
+- If content needs long descriptions, use flowchart TD instead of mindmap
 - Keep depth ≤3 levels with ≤5 children per node for readable output
+
+**Complex content layout pattern** (for dense multi-branch structures):
+- Use `graph TD` vertical chain: main flow runs down the left column
+- Each step fans out one detail node to the right via labeled edge
+- Detail nodes use `\n` for multi-line content
+- This gives ~45 lines per stage, readable in one screen
+- Example: `R[Title] --> A[Step1]` then `A -->|details| A1["Line1\nLine2\nLine3"]`
 
 ## Syntax Quick Reference
 
