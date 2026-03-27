@@ -67,8 +67,9 @@ User request: $ARGUMENTS
 - **Use raw chars** (`&`, `<`, `>`) — never HTML entities (`&amp;` etc. break rendering)
 - **Avoid `graph RL`** — text mirrors bug; use `graph LR` instead
 - Prefer `graph LR` over `graph TD` for fewer lines; flowchart TD ≤6 nodes
-- `mindmap` is the most compact for hierarchical info
-- Keep node labels to 2-3 words
+- **Mindmap labels ≤15 chars** — no text wrapping; long labels break layout completely
+- Mindmap: ≤3 levels, ≤5 children/node; for long descriptions use flowchart TD + subgraphs instead
+- Keep node labels to 2-3 words (flowchart), ≤15 chars (mindmap)
 - `--gap`/`--padding-x` only affect flowchart/sequence/class/ER/block
 - `--width N` is a ceiling, not forced — diagrams render at natural size if narrower
 - Color: prefer `amber`/`phosphor` (bold lines); avoid `neon`/`default` (dim lines)

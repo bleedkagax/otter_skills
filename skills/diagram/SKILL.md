@@ -72,6 +72,12 @@ Available themes (via `uvx termaid`): `default`, `terra`, `neon`, `mono`, `amber
 - Use `mindmap` for hierarchical overviews — highest information density
 - Limit flowcharts to ≤6 nodes; merge minor steps into single nodes
 
+**Mindmap label rules** (critical — long labels cause chaotic layout):
+- **Max ~15 chars per label** — mindmap does NOT wrap text; long labels push branches off-screen
+- Use short codes/abbreviations: `Evidence rules` not `必须引用具体原话 + anti-injection 防护`
+- If content needs long descriptions, use flowchart TD with subgraphs instead of mindmap
+- Keep depth ≤3 levels with ≤5 children per node for readable output
+
 ## Syntax Quick Reference
 
 See [references/mermaid-syntax.md](references/mermaid-syntax.md) for full syntax of all 10 diagram types.
@@ -114,8 +120,8 @@ Verified via 100-test stress suite:
 - **Use `\n` not `<br/>`** for multi-line labels: `A["line1\nline2"]`
 - **Use raw chars** (`&`, `<`, `>`) in labels — never HTML entities
 - **Avoid `graph RL`** — text mirrors bug; use `graph LR` instead
-- Keep node labels concise (2-3 words)
+- Keep node labels concise (2-3 words for flowchart, **≤15 chars for mindmap**)
 - Flowchart TD: ≤6 nodes to fit one screen; use LR for longer chains
-- `mindmap` is the most compact for hierarchical structures
+- Mindmap: ≤3 levels deep, ≤5 children/node, short labels only — long text breaks layout
 - `--gap`/`--padding-x` only affect flowchart/sequence/class/ER/block
 - Prefer `amber`/`phosphor` theme over `neon`/`default` for line visibility
