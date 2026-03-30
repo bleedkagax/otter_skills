@@ -1,5 +1,5 @@
 ---
-name: diagram
+name: terminal-diagrams
 description: Render Mermaid diagrams as Unicode art in the terminal using termaid. Use when the user asks to visualize architecture, workflows, data models, class hierarchies, state machines, sequences, git history, proportions, hierarchies, or any diagram. Triggers include "draw a diagram", "visualize this", "show the flow", "render a flowchart", "sequence diagram", "class diagram", "ER diagram", "state diagram", "mindmap", "treemap", "pie chart", "git graph", or any request to diagram code structure, system design, or data relationships.
 ---
 

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Diagram"
-  short_description: "Render Mermaid diagrams in the terminal"
-  default_prompt: "Render a diagram for..."

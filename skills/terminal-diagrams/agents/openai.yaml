@@ -1,0 +1,4 @@
+interface:
+  display_name: "Terminal Diagrams"
+  short_description: "Render Mermaid diagrams as Unicode art in the terminal"
+  default_prompt: "Render a diagram for..."

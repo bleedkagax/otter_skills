@@ -5,13 +5,13 @@ Reusable skills for AI coding agents. Compatible with [skills.sh](https://skills
 ## Install
 
 ```bash
-npx skills add https://github.com/bleedkagax/otter_skills --skill diagram
+npx skills add https://github.com/bleedkagax/otter_skills --skill terminal-diagrams
 ```
 
 Global install (available across all projects):
 
 ```bash
-npx skills add https://github.com/bleedkagax/otter_skills --skill diagram --global
+npx skills add https://github.com/bleedkagax/otter_skills --skill terminal-diagrams --global
 ```
 
 Install all skills in this repo:
@@ -22,7 +22,7 @@ npx skills add https://github.com/bleedkagax/otter_skills
 
 ## Available Skills
 
-### diagram
+### terminal-diagrams
 
 Render Mermaid diagrams as Unicode art in the terminal via [termaid](https://github.com/fasouto/termaid).
 
@@ -50,10 +50,10 @@ If not using `npx skills`, copy directly:
 
 ```bash
 # Skill (auto-triggers on diagram requests)
-cp -r skills/diagram ~/.claude/skills/
+cp -r skills/terminal-diagrams ~/.claude/skills/
 
 # Slash command (/diagram)
-cp skills/diagram/diagram-command.md ~/.claude/commands/diagram.md
+cp skills/terminal-diagrams/diagram-command.md ~/.claude/commands/diagram.md
 ```
 
 ## License
