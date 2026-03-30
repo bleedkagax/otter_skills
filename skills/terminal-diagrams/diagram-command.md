@@ -23,15 +23,15 @@ User request: $ARGUMENTS
    - Main flow down left column: `A --> B --> C`
    - Each step fans out one detail node right: `A -->|details| A1["Line1\nLine2"]`
 
-4. Render using heredoc pipe. **Always use `--gap 1 --padding-x 0`** for compact output:
+4. Render using the auto-color script (handles --gap 1 --padding-x 0, Python version, dark/light theme automatically):
    ```bash
-   # Compact render (recommended default)
-   uvx termaid --gap 1 --padding-x 0 <<'EOF'
+   # DEFAULT: auto-color render
+   bash ~/.claude/skills/terminal-diagrams/scripts/termaid-render.sh <<'EOF'
    <mermaid syntax here>
    EOF
 
-   # With color (dark terminal → amber, light → terra)
-   FORCE_COLOR=1 uvx --python 3.11 --from "termaid[rich]" termaid --gap 1 --padding-x 0 --theme amber <<'EOF'
+   # Fallback if script not available
+   uvx termaid --gap 1 --padding-x 0 <<'EOF'
    <mermaid syntax here>
    EOF
    ```
@@ -101,6 +101,7 @@ When a diagram would exceed these thresholds, **auto-split** into index + sub-di
 - **Use `\n` not `<br/>`** for multi-line labels: `A["line1\nline2"]`
 - **Use raw chars** (`&`, `<`, `>`) — never HTML entities (`&amp;` etc. break rendering)
 - **Avoid `graph RL`** — text mirrors bug; use `graph LR` instead
+- **Decision diamonds: max 2-3 branches** in TD — 4+ branches overflow width. Split into chained diamonds or use LR
 - Prefer `graph LR` over `graph TD` for fewer lines; flowchart TD ≤6 nodes
 - **Mindmap labels ≤15 chars** — no text wrapping; long labels break layout completely
 - Mindmap: ≤3 levels, ≤5 children/node; for long descriptions use flowchart TD + subgraphs instead

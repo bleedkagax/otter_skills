@@ -19,27 +19,21 @@ If the default Python is < 3.11, use `uvx --python 3.11 termaid` (or 3.12/3.13).
 
 ## Rendering
 
-Always use `--gap 1 --padding-x 0` for compact output. termaid's defaults (gap=4, padding-x=4) are too spacious for terminal viewing.
+Always use the auto-color render script as default. It handles `--gap 1 --padding-x 0`, Python version detection, and dark/light theme selection automatically.
 
 ```bash
-# Standard compact render (recommended default)
-uvx termaid --gap 1 --padding-x 0 <<'EOF'
-graph LR; A[Start] --> B{OK?} --> C[Done]
-EOF
-
-# File input
-uvx termaid --gap 1 --padding-x 0 diagram.mmd
-
-# With color (auto-detect dark/light on macOS)
+# DEFAULT: auto-color render (dark → amber, light → colored lines + black text)
 bash scripts/termaid-render.sh <<'EOF'
-...
+graph LR; A[Start] --> B{OK?} -->|Yes| C[Done]
 EOF
 
-# Or manual: amber for dark, terra for light
-FORCE_COLOR=1 uvx --python 3.11 --from "termaid[rich]" termaid --gap 1 --padding-x 0 --theme amber <<'EOF'
+# Fallback if scripts/ not available
+uvx termaid --gap 1 --padding-x 0 <<'EOF'
 ...
 EOF
 ```
+
+The skill's `scripts/termaid-render.sh` is at `~/.claude/skills/terminal-diagrams/scripts/termaid-render.sh` (or `~/.agents/skills/terminal-diagrams/scripts/`).
 
 ## Color Output
 
@@ -136,6 +130,12 @@ EOF
 - Detail nodes use `\n` for multi-line content
 - This gives ~45 lines per stage, readable in one screen
 - Example: `R[Title] --> A[Step1]` then `A -->|details| A1["Line1\nLine2\nLine3"]`
+
+**Decision diamond branch limit** (critical for TD layout):
+- **Max 2-3 branches** per diamond in `graph TD` — termaid renders all branches horizontally, so 4+ branches overflow terminal width
+- For 4+ branches: replace diamond with a **vertical chain of if/else nodes**, or use a **subgraph** to group outcomes
+- Pattern for 4 branches: `DEC{type?} -->|A| X[...]\n DEC -->|B| Y[...]` split into 2 diamonds with 2 branches each
+- Alternative: use `graph LR` for multi-branch decisions (branches stack vertically in LR)
 
 ## Complex Diagrams
 
