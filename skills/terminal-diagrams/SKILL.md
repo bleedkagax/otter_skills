@@ -142,6 +142,7 @@ EOF
                                   A -->|detail| A1[...]
                                   B -->|detail| B1[...]
   ```
+- **For 1-to-many fan-out**: use `graph LR` — children stack vertically in LR mode, preserving the parallel semantic without overflow
 - Alternative: split into sub-diagrams, one per branch
 
 ## Complex Diagrams
