@@ -19,29 +19,21 @@ If the default Python is < 3.11, use `uvx --python 3.11 termaid` (or 3.12/3.13).
 
 ## Rendering
 
-Always use `--gap 1 --padding-x 0` for compact output. Pipe through inline colorizer for colored structural glyphs:
+Always use `scripts/termaid-render.sh` for rendering. It handles compact output (`--gap 1 --padding-x 0`), Python version detection, dark/light auto-theme (macOS), pipefail error handling, and 5-color structural glyphs automatically.
 
 ```bash
-# Render with color (5-color structural glyphs, no external dependency)
-uvx termaid --gap 1 --padding-x 0 <<'EOF' | python3 -c "
-import sys; R='\033[0m'
-M={c:'\033[38;2;30;100;180m' for c in '┌┐└┘├┤┬┴─╭╮╰╯┼'}
-M.update({c:'\033[38;2;200;80;30m' for c in '▼►◄▲→←↑↓'})
-M.update({c:'\033[38;2;100;130;160m' for c in '│┆┃'})
-M.update({c:'\033[38;2;130;60;160m' for c in '◇◯◉●■✖'})
-M.update({c:'\033[38;2;40;140;80m' for c in '┄'})
-[sys.stdout.write(''.join(M[c]+c+R if c in M else c for c in l)) for l in sys.stdin]
-"
+# DEFAULT: auto-color render script (relative to skill base dir)
+bash {baseDir}/scripts/termaid-render.sh <<'EOF'
 graph LR; A[Start] --> B{OK?} -->|Yes| C[Done]
 EOF
 
-# Plain render (no color)
+# Plain render (no color, no script dependency)
 uvx termaid --gap 1 --padding-x 0 <<'EOF'
 ...
 EOF
 ```
 
-**Optional**: `scripts/termaid-render.sh` adds auto dark/light theme (macOS), amber for dark terminals, `pipefail`.
+**Agent path resolution**: determine this SKILL.md file's directory as `{baseDir}`. Common locations: `~/.claude/skills/terminal-diagrams/`, `~/.agents/skills/terminal-diagrams/`, `.codebuddy/skills/terminal-diagrams/`.
 
 Fallback chain if rendering fails: `--ascii` → return Mermaid source with explanation.
 
