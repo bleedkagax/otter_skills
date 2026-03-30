@@ -23,24 +23,20 @@ User request: $ARGUMENTS
    - Main flow down left column: `A --> B --> C`
    - Each step fans out one detail node right: `A -->|details| A1["Line1\nLine2"]`
 
-4. Render using the auto-color script (handles --gap 1 --padding-x 0, Python version, dark/light theme automatically):
+4. Render using heredoc pipe. Always use `--gap 1 --padding-x 0`:
    ```bash
-   # DEFAULT: auto-color render
-   bash ~/.claude/skills/terminal-diagrams/scripts/termaid-render.sh <<'EOF'
-   <mermaid syntax here>
-   EOF
-
-   # Fallback if script not available
    uvx termaid --gap 1 --padding-x 0 <<'EOF'
    <mermaid syntax here>
    EOF
    ```
 
+   If rendering fails, fallback: add `--ascii` flag → if still fails, return raw Mermaid source with explanation.
+
 5. If output is still too large:
-   - Use `--width 80` for explicit width limit
    - Switch to `graph LR` (horizontal) — far fewer lines than `graph TD`
+   - Reduce nodes or split into index + sub-diagrams
    - Use `mindmap` for hierarchical overviews — highest information density
-   - Limit flowchart nodes to ≤6; merge minor steps
+   - `--width N` is a ceiling hint only, not a forced compress — prefer reflowing the diagram instead
 
 ## Quick Syntax Reference
 
@@ -108,5 +104,5 @@ When a diagram would exceed these thresholds, **auto-split** into index + sub-di
 - Keep node labels to 2-3 words (flowchart), ≤15 chars (mindmap)
 - `--gap`/`--padding-x` only affect flowchart/sequence/class/ER/block
 - `--width N` is a ceiling, not forced — diagrams render at natural size if narrower
-- Color: dark terminal → `amber`; light terminal → no theme (plain black = max contrast)
+- Color: dark → `amber`; light → plain render (terminal default text + colored structural glyphs via render script, macOS only auto-detect)
 - If Python < 3.11 error, add `--python 3.11` after `uvx`

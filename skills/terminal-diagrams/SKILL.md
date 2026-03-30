@@ -19,21 +19,23 @@ If the default Python is < 3.11, use `uvx --python 3.11 termaid` (or 3.12/3.13).
 
 ## Rendering
 
-Always use the auto-color render script as default. It handles `--gap 1 --padding-x 0`, Python version detection, and dark/light theme selection automatically.
+Always use `--gap 1 --padding-x 0` for compact output.
 
 ```bash
-# DEFAULT: auto-color render (dark → amber, light → colored lines + black text)
-bash scripts/termaid-render.sh <<'EOF'
+# Standard render
+uvx termaid --gap 1 --padding-x 0 <<'EOF'
 graph LR; A[Start] --> B{OK?} -->|Yes| C[Done]
 EOF
+```
 
-# Fallback if scripts/ not available
-uvx termaid --gap 1 --padding-x 0 <<'EOF'
+**Optional**: `scripts/termaid-render.sh` adds auto dark/light theme selection (macOS only) and `pipefail` error handling. Use it when available:
+```bash
+bash scripts/termaid-render.sh <<'EOF'
 ...
 EOF
 ```
 
-The skill's `scripts/termaid-render.sh` is at `~/.claude/skills/terminal-diagrams/scripts/termaid-render.sh` (or `~/.agents/skills/terminal-diagrams/scripts/`).
+Fallback chain if rendering fails: `--ascii` → return Mermaid source with explanation.
 
 ## Color Output
 
@@ -63,12 +65,12 @@ Available themes: `default`, `terra`, `neon`, `mono`, `amber`, `phosphor`.
 
 **Recommendation by background**:
 - **Dark terminal** → `amber` (gold on dark = highest contrast)
-- **Light terminal** → **no color theme** (plain black text on white = max contrast). All 6 themes use bright/light colors designed for dark backgrounds — they're nearly invisible on white.
+- **Light terminal** → terminal default text + colored structural glyphs (via render script). Without script: plain render (no color).
 
-**Auto-detect script** (macOS): `scripts/termaid-render.sh` detects system dark/light mode automatically:
+**Auto-detect script** (macOS only): `scripts/termaid-render.sh` detects system appearance via `defaults read -g AppleInterfaceStyle`. On Linux/CI/SSH, defaults to light mode — set `TERMAID_THEME=amber` explicitly for dark terminals:
 ```bash
 echo 'graph LR; A --> B' | bash scripts/termaid-render.sh
-# Dark mode → amber with color, Light mode → plain (no color)
+# Dark mode → amber, Light mode → terminal default text + colored structural glyphs
 # Override: TERMAID_THEME=amber bash scripts/termaid-render.sh
 # Force plain: TERMAID_THEME=none bash scripts/termaid-render.sh
 ```
@@ -222,17 +224,14 @@ graph TD
 EOF
 ```
 
-**[2/2] Update Memory Store** (TD -- has 3-way branch):
+**[2/2] Update Memory Store** (LR for 3-way fan-out):
 ```bash
 uvx termaid --gap 1 --padding-x 0 <<'EOF'
-graph TD
-    A["Extracted\nMemories"] --> B{"For Each\nMemory"}
-    B -->|New| C["ADD to\nVector Store"]
-    B -->|Exists| D["UPDATE\nExisting"]
-    B -->|Contradicts| E["DELETE Old\n+ ADD New"]
-    C --> F["Done"]
-    D --> F
-    E --> F
+graph LR
+    A["Extracted\nMemories"] --> B{"Each\nMemory"}
+    B -->|New| C["ADD"]
+    B -->|Exists| D["UPDATE"]
+    B -->|Contradicts| E["DELETE+ADD"]
 EOF
 ```
 
@@ -262,6 +261,7 @@ See [references/templates.md](references/templates.md) for 6 ready-to-use scenar
 - **Edge styles not differentiated**: bidirectional (`<-->`), dotted (`-.->`) and thick (`==>`) edges may look identical to normal arrows.
 - **Dim lines on some themes**: `default`/`neon` use ANSI dim attribute. Use `amber`/`phosphor` for bold lines.
 - **`--width N` is a ceiling, not a target**: diagrams render at natural size if narrower than N. Does not force compression.
+- **Treemap exceeds 80 cols with 7+ leaf nodes**: treemap auto-sizes to content width; `--width`/`--gap` have no effect. Keep treemaps to ≤6 leaf nodes, or accept wider output.
 - **`--padding-y 0` and `--sharp-edges` are no-ops**: no visible effect in terminal rendering.
 - **Min vertical padding**: 1-line forced internal padding above/below text (not configurable).
 

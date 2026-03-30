@@ -6,11 +6,11 @@
 # Override: TERMAID_THEME=amber ./termaid-render.sh
 #           TERMAID_THEME=none  ./termaid-render.sh  (force plain, no color)
 
-set -e
+set -eo pipefail
 
 # Auto-detect theme based on macOS appearance
 # Dark  → amber theme (gold lines + gold text, full color)
-# Light → "light" mode (colored lines only, black text — best contrast on white bg)
+# Light → terminal default text + colored structural glyphs
 MODE="light"
 if [ -n "$TERMAID_THEME" ]; then
     if [ "$TERMAID_THEME" = "none" ]; then
@@ -32,7 +32,7 @@ for v in 3.13 3.12 3.11; do
     fi
 done
 
-# Light mode colorizer: multi-color lines + black text (no termaid source changes)
+# Light mode colorizer: terminal default text + colored structural glyphs
 # 5 colors by structural role, text stays terminal default (black)
 colorize_lines() {
     python3 -c "
