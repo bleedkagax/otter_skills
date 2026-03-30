@@ -131,11 +131,18 @@ EOF
 - This gives ~45 lines per stage, readable in one screen
 - Example: `R[Title] --> A[Step1]` then `A -->|details| A1["Line1\nLine2\nLine3"]`
 
-**Decision diamond branch limit** (critical for TD layout):
-- **Max 2-3 branches** per diamond in `graph TD` — termaid renders all branches horizontally, so 4+ branches overflow terminal width
-- For 4+ branches: replace diamond with a **vertical chain of if/else nodes**, or use a **subgraph** to group outcomes
-- Pattern for 4 branches: `DEC{type?} -->|A| X[...]\n DEC -->|B| Y[...]` split into 2 diamonds with 2 branches each
-- Alternative: use `graph LR` for multi-branch decisions (branches stack vertically in LR)
+**Fan-out limit** (critical — applies to ALL nodes in TD, not just diamonds):
+- **Max 2 children** per node in `graph TD` — termaid renders ALL children horizontally in one row. 3+ children overflow terminal width.
+- For 3+ children: use **vertical chain pattern** — connect parent to children sequentially instead of fan-out:
+  ```
+  BAD (3 fan-out, overflows):     GOOD (vertical chain):
+  A --> B                         A --> B
+  A --> C                         B --> C
+  A --> D                         C --> D
+                                  A -->|detail| A1[...]
+                                  B -->|detail| B1[...]
+  ```
+- Alternative: split into sub-diagrams, one per branch
 
 ## Complex Diagrams
 

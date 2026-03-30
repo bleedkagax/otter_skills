@@ -101,7 +101,7 @@ When a diagram would exceed these thresholds, **auto-split** into index + sub-di
 - **Use `\n` not `<br/>`** for multi-line labels: `A["line1\nline2"]`
 - **Use raw chars** (`&`, `<`, `>`) — never HTML entities (`&amp;` etc. break rendering)
 - **Avoid `graph RL`** — text mirrors bug; use `graph LR` instead
-- **Decision diamonds: max 2-3 branches** in TD — 4+ branches overflow width. Split into chained diamonds or use LR
+- **Max 2 children per node in TD** — termaid renders ALL children horizontally. 3+ overflows. Use vertical chain instead of fan-out
 - Prefer `graph LR` over `graph TD` for fewer lines; flowchart TD ≤6 nodes
 - **Mindmap labels ≤15 chars** — no text wrapping; long labels break layout completely
 - Mindmap: ≤3 levels, ≤5 children/node; for long descriptions use flowchart TD + subgraphs instead
