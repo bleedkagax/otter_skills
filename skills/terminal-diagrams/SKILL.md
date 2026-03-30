@@ -102,20 +102,37 @@ EOF
 
 ## Diagram Type Selection
 
-| User Intent | Type | Header |
-|---|---|---|
-| Process, decision, workflow, architecture | Flowchart | `graph TD` / `graph LR` |
-| Service/actor interactions over time | Sequence | `sequenceDiagram` |
-| Classes, interfaces, inheritance | Class | `classDiagram` |
-| Database entities, relationships | ER | `erDiagram` |
-| States, transitions, lifecycle | State | `stateDiagram-v2` |
-| System components in grid | Block | `block-beta` |
-| Branch/merge history | Git | `gitGraph` |
-| Proportions, percentages | Pie | `pie title ...` |
-| Hierarchical data with sizes | Treemap | `treemap-beta` |
-| Brainstorm, tree structure | Mindmap | `mindmap` |
+**3-second decision**:
+- "What order/steps?" → **Flowchart**
+- "Who calls whom?" → **Sequence**
+- "What structure?" → **Mindmap**
+- "What relationship?" → **Class / ER**
+- "What state?" → **State**
+- "What proportion?" → **Pie / Treemap**
 
-**Density strategy**: Flowchart TD costs ~5 lines per node (box borders + forced 1-line internal padding). For one-screen diagrams:
+Sorted by usage frequency (high → low):
+
+| Freq | Type | Header | Best For |
+|---|---|---|---|
+| **High** | Flowchart | `graph TD/LR` | Business logic, error handling, approval flows |
+| **High** | Sequence | `sequenceDiagram` | API chains, microservice calls, debugging |
+| **High** | Mindmap | `mindmap` | Brainstorm, tech planning, knowledge maps |
+| Med | Class | `classDiagram` | Domain models, design patterns, refactoring |
+| Med | ER | `erDiagram` | DB schema, migration planning |
+| Med | State | `stateDiagram-v2` | Order lifecycle, UI state, connection mgmt |
+| Med | Git | `gitGraph` | Branch strategy docs, release flow |
+| Low | Pie | `pie title ...` | Profiling, cost breakdown, bug categories |
+| Low | Block | `block-beta` | Deployment topology, network layout |
+| Low | Treemap | `treemap-beta` | Code size analysis, dependency weight |
+
+**Progressive refinement** — for complex designs, use diagrams in this order:
+1. `mindmap` — brainstorm and structure (5 min)
+2. `flowchart` — detail core process flows
+3. `sequenceDiagram` — clarify API/service interactions
+4. `classDiagram` / `erDiagram` — solidify data models
+5. `stateDiagram` — complete state machine coverage
+
+**Density strategy**: Flowchart TD costs ~5 lines per node. For one-screen diagrams:
 - Prefer `graph LR` over `graph TD` — horizontal layout uses far fewer lines
 - Use `mindmap` for hierarchical overviews — highest information density
 - Limit flowcharts to ≤6 nodes; merge minor steps into single nodes

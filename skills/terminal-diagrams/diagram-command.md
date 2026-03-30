@@ -4,17 +4,13 @@ User request: $ARGUMENTS
 
 ## Instructions
 
-1. Determine the best diagram type for the request:
-   - **flowchart** (`graph TD/LR`) - processes, decisions, workflows, architecture
-   - **sequence** (`sequenceDiagram`) - interactions between actors/services over time
-   - **class** (`classDiagram`) - classes, interfaces, relationships
-   - **er** (`erDiagram`) - entities and relationships (database models)
-   - **state** (`stateDiagram-v2`) - state machines, lifecycle
-   - **block** (`block-beta`) - system components in grid layout
-   - **git** (`gitGraph`) - branch/merge history
-   - **pie** (`pie title ...`) - proportions/percentages
-   - **treemap** (`treemap-beta`) - hierarchical data with sizes
-   - **mindmap** (`mindmap`) - hierarchical brainstorming/structure
+1. Pick the diagram type — 3-second decision:
+   - "What steps/order?" → **flowchart** (`graph TD/LR`) — logic, workflow, architecture
+   - "Who calls whom?" → **sequence** (`sequenceDiagram`) — API chains, debugging
+   - "What structure?" → **mindmap** (`mindmap`) — brainstorm, planning
+   - "What relationship?" → **class** (`classDiagram`) / **er** (`erDiagram`)
+   - "What state?" → **state** (`stateDiagram-v2`) — lifecycle, state machine
+   - Other: **git** (`gitGraph`), **pie** (`pie`), **block** (`block-beta`), **treemap** (`treemap-beta`)
 
 2. **Bilingual labels** — smart language strategy:
    Use the user's language directly in labels — CJK is fully supported (termaid >= 0.5.0). For bilingual contexts, optionally annotate: `A["Quality Gate\n(质量门控)"]`. Response text: user's language.
