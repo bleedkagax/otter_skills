@@ -5,19 +5,19 @@ Reusable skills for AI coding agents. Compatible with [skills.sh](https://skills
 ## Install
 
 ```bash
-npx skills add bleedkagax/otter_skills
-```
-
-Or install a specific skill:
-
-```bash
-npx skills add bleedkagax/otter_skills --skill diagram
+npx skills add https://github.com/bleedkagax/otter_skills --skill diagram
 ```
 
 Global install (available across all projects):
 
 ```bash
-npx skills add bleedkagax/otter_skills --global
+npx skills add https://github.com/bleedkagax/otter_skills --skill diagram --global
+```
+
+Install all skills in this repo:
+
+```bash
+npx skills add https://github.com/bleedkagax/otter_skills
 ```
 
 ## Available Skills
