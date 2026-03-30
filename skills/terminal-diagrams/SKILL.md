@@ -19,21 +19,29 @@ If the default Python is < 3.11, use `uvx --python 3.11 termaid` (or 3.12/3.13).
 
 ## Rendering
 
-Always use `--gap 1 --padding-x 0` for compact output.
+Always use `--gap 1 --padding-x 0` for compact output. Pipe through inline colorizer for colored structural glyphs:
 
 ```bash
-# Standard render
-uvx termaid --gap 1 --padding-x 0 <<'EOF'
+# Render with color (5-color structural glyphs, no external dependency)
+uvx termaid --gap 1 --padding-x 0 <<'EOF' | python3 -c "
+import sys; R='\033[0m'
+M={c:'\033[38;2;30;100;180m' for c in '┌┐└┘├┤┬┴─╭╮╰╯┼'}
+M.update({c:'\033[38;2;200;80;30m' for c in '▼►◄▲→←↑↓'})
+M.update({c:'\033[38;2;100;130;160m' for c in '│┆┃'})
+M.update({c:'\033[38;2;130;60;160m' for c in '◇◯◉●■✖'})
+M.update({c:'\033[38;2;40;140;80m' for c in '┄'})
+[sys.stdout.write(''.join(M[c]+c+R if c in M else c for c in l)) for l in sys.stdin]
+"
 graph LR; A[Start] --> B{OK?} -->|Yes| C[Done]
 EOF
-```
 
-**Optional**: `scripts/termaid-render.sh` adds auto dark/light theme selection (macOS only) and `pipefail` error handling. Use it when available:
-```bash
-bash scripts/termaid-render.sh <<'EOF'
+# Plain render (no color)
+uvx termaid --gap 1 --padding-x 0 <<'EOF'
 ...
 EOF
 ```
+
+**Optional**: `scripts/termaid-render.sh` adds auto dark/light theme (macOS), amber for dark terminals, `pipefail`.
 
 Fallback chain if rendering fails: `--ascii` → return Mermaid source with explanation.
 

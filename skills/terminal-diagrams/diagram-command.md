@@ -23,14 +23,23 @@ User request: $ARGUMENTS
    - Main flow down left column: `A --> B --> C`
    - Each step fans out one detail node right: `A -->|details| A1["Line1\nLine2"]`
 
-4. Render using heredoc pipe. Always use `--gap 1 --padding-x 0`:
+4. Render with color. Pipe through inline colorizer (no external script dependency):
    ```bash
-   uvx termaid --gap 1 --padding-x 0 <<'EOF'
+   uvx termaid --gap 1 --padding-x 0 <<'EOF' | python3 -c "
+   import sys
+   R='\033[0m'
+   M={c:'\033[38;2;30;100;180m' for c in '┌┐└┘├┤┬┴─╭╮╰╯┼'}
+   M.update({c:'\033[38;2;200;80;30m' for c in '▼►◄▲→←↑↓'})
+   M.update({c:'\033[38;2;100;130;160m' for c in '│┆┃'})
+   M.update({c:'\033[38;2;130;60;160m' for c in '◇◯◉●■✖'})
+   M.update({c:'\033[38;2;40;140;80m' for c in '┄'})
+   [sys.stdout.write(''.join(M[c]+c+R if c in M else c for c in l)) for l in sys.stdin]
+   "
    <mermaid syntax here>
    EOF
    ```
 
-   If rendering fails, fallback: add `--ascii` flag → if still fails, return raw Mermaid source with explanation.
+   If rendering fails: add `--ascii` flag → if still fails, return raw Mermaid source with explanation.
 
 5. If output is still too large:
    - Switch to `graph LR` (horizontal) — far fewer lines than `graph TD`
