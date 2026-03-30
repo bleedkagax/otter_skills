@@ -12,12 +12,7 @@ If the default Python is < 3.11, use `uvx --python 3.11 termaid` (or 3.12/3.13).
 ## Workflow
 
 1. Determine the best diagram type from user request or code context
-2. **Language adapt** — smart bilingual strategy:
-   - **Node labels**: English term on first line + optional native annotation on second line via `\n`: `A["Quality Gate\n(质量门控)"]`. Add annotation for key/ambiguous terms; skip for obvious ones (Start, End, Yes/No).
-   - **Edge labels**: English only — short, no room for bilingual.
-   - **Title/root nodes**: bilingual: `R["Two-Stage Prompt\n(两阶段提示词)"]`
-   - **Response text** around the diagram: user's language.
-   - The `\n` annotation pattern works because termaid sizes boxes to the longer (English) first line, so CJK on the second line stays inside the box.
+2. **Language adapt**: use the user's language directly in labels. CJK characters are fully supported since termaid 0.5.0. For bilingual contexts, optionally use `\n` annotation: `A["Quality Gate\n(质量门控)"]`. Response text around the diagram: user's language.
 3. Generate valid Mermaid syntax
 4. Render via pipe to termaid
 5. If output is too wide, re-render with compact options
@@ -252,7 +247,7 @@ See [references/templates.md](references/templates.md) for 6 ready-to-use scenar
 
 ## Known Limitations
 
-- **CJK characters misalign boxes**: termaid uses `len()` for width — CJK chars occupy 2 columns but counted as 1. **Workaround: use English on the first line, CJK only as `\n`-annotation on second line** — box sizes to the English line so alignment is preserved (PR submitted to fix upstream).
+- **CJK characters**: fixed in termaid >= 0.5.0. If using older versions, CJK labels may misalign boxes — upgrade with `pip install --upgrade termaid`.
 - **RL direction mirrors text**: `graph RL` renders node labels reversed (e.g. "Start" → "tratS"). **Avoid `graph RL`**; use `graph LR` instead.
 - **`<br/>` not supported**: renders as literal text. Use `\n` in double-quoted labels: `A["line1\nline2"]`
 - **HTML entities break rendering**: `&amp;`, `&quot;` etc. corrupt output. Use raw chars (`&`, `<`, `>`) directly.

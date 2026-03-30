@@ -17,11 +17,7 @@ User request: $ARGUMENTS
    - **mindmap** (`mindmap`) - hierarchical brainstorming/structure
 
 2. **Bilingual labels** — smart language strategy:
-   - **Node labels**: English term on first line + optional native annotation on second line via `\n`: `A["Quality Gate\n(质量门控)"]`. Add annotation for key/ambiguous terms; skip for obvious ones (Start, End, Yes/No).
-   - **Edge labels**: English only — short, no room for bilingual.
-   - **Title/root nodes**: bilingual: `R["Two-Stage Prompt\n(两阶段提示词)"]`
-   - **Response text** around the diagram: user's language.
-   - Box sizes to the English first line, so CJK annotation on second line stays inside the box.
+   Use the user's language directly in labels — CJK is fully supported (termaid >= 0.5.0). For bilingual contexts, optionally annotate: `A["Quality Gate\n(质量门控)"]`. Response text: user's language.
 
 3. Generate valid Mermaid syntax. For complex multi-branch content, use vertical chain pattern:
    - Main flow down left column: `A --> B --> C`
@@ -101,7 +97,7 @@ When a diagram would exceed these thresholds, **auto-split** into index + sub-di
 ## Guidelines
 
 - **Always `--gap 1 --padding-x 0`** — default padding wastes screen space
-- **Bilingual labels**: English first line + `\n(native annotation)` for key terms — CJK stays inside box
+- **CJK fully supported** (termaid >= 0.5.0) — use any language directly in labels
 - **Use `\n` not `<br/>`** for multi-line labels: `A["line1\nline2"]`
 - **Use raw chars** (`&`, `<`, `>`) — never HTML entities (`&amp;` etc. break rendering)
 - **Avoid `graph RL`** — text mirrors bug; use `graph LR` instead
