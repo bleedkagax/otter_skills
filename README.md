@@ -8,6 +8,10 @@ Reusable skills for AI coding agents. Compatible with [skills.sh](https://skills
 npx skills add https://github.com/bleedkagax/otter_skills --skill terminal-diagrams
 ```
 
+```bash
+npx skills add https://github.com/bleedkagax/otter_skills --skill setup-fastfetch-theme
+```
+
 Global install (available across all projects):
 
 ```bash
@@ -44,6 +48,16 @@ EOF
 - 6 ready-to-use templates (API flow, CRUD, microservice, git, decision, project)
 - 100-test stress suite verified
 
+### setup-fastfetch-theme
+
+Install Fastfetch on macOS and apply the `decksters-lab/fastfetch` theme with minimal compatibility patches.
+
+**Features**:
+- Preserves the original layout, colors, and image assets from the theme repo
+- Fixes the macOS `OS Age` command without changing the visual design
+- Uses `kitty-direct` plus explicit logo sizing for Ghostty image rendering
+- Includes optional `~/.zshrc` auto-run guidance
+
 ## Manual Install
 
 If not using `npx skills`, copy directly:
@@ -51,6 +65,9 @@ If not using `npx skills`, copy directly:
 ```bash
 # Skill (auto-triggers on diagram requests)
 cp -r skills/terminal-diagrams ~/.claude/skills/
+
+# Skill (install Fastfetch + decksters-lab config on macOS)
+cp -r skills/setup-fastfetch-theme ~/.claude/skills/
 
 # Slash command (/diagram)
 cp skills/terminal-diagrams/diagram-command.md ~/.claude/commands/diagram.md

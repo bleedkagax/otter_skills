@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fastfetch Theme Setup"
+  short_description: "Install Fastfetch + decksters-lab config on macOS"
+  default_prompt: "Use $setup-fastfetch-theme to install Fastfetch and apply the decksters-lab config on macOS with the Ghostty-safe compatibility fixes."
