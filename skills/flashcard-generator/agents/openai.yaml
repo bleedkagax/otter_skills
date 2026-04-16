@@ -1,0 +1,4 @@
+interface:
+  display_name: "Flashcard Generator"
+  short_description: "Generate flashcards with cognitive-layer decomposition"
+  default_prompt: "Generate flashcards for..."

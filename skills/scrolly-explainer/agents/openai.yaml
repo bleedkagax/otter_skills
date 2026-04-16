@@ -1,0 +1,4 @@
+interface:
+  display_name: "Scrolly Explainer"
+  short_description: "Generate interactive scrollytelling HTML explanations"
+  default_prompt: "Explain this concept interactively..."
