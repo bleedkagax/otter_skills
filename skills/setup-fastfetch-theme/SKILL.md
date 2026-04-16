@@ -54,6 +54,8 @@ cp "$tmpdir/repo/fastfetch/config.jsonc" ~/.config/fastfetch/config.jsonc
 
 5. Start from the repository's original `config.jsonc`, then patch only the compatibility issues below.
 
+6. Add fastfetch to the user's shell startup file (see **Shell Auto-Run** below). This is a recommended step — without it the user must type `fastfetch` manually each time they open a terminal.
+
 ## Compatibility Rules
 
 Keep the theme visually intact. Do not redesign spacing, colors, modules, or artwork unless the user explicitly asks.
@@ -90,17 +92,22 @@ Use this exact `logo` block:
 
 Keep the existing `source`, `height`, and `padding` from the repo. Add `width: 36` and change the protocol only if needed for Ghostty image rendering.
 
-### Optional zsh auto-run
+### Shell Auto-Run (Recommended)
 
-Only add this if the user explicitly wants Fastfetch on every new shell:
+Append the following guarded snippet to the user's shell rc file (`~/.zshrc` for zsh, `~/.bashrc` for bash). **Do not** add it to `~/.zshenv` or `~/.bash_profile` — those run for non-interactive shells too and will break pipes and scripts.
 
 ```zsh
-if [[ -o interactive ]] && command -v fastfetch >/dev/null 2>&1; then
-  fastfetch
+# Fastfetch — show system info on new interactive shell
+if [[ -o interactive ]] && command -v fastfetch &>/dev/null; then
+    fastfetch
 fi
 ```
 
-Append it to `~/.zshrc`, not `~/.zshenv`.
+The two guards are important:
+- `[[ -o interactive ]]` — only runs in interactive shells (not scripts, pipes, or agent subprocesses like Claude Code)
+- `command -v fastfetch` — gracefully skips if fastfetch is uninstalled later
+
+Check if the snippet already exists before appending (`grep -q fastfetch ~/.zshrc`). Place it at the **end** of the rc file so all PATH and environment setup has completed before fastfetch tries to locate its config and image assets.
 
 ## Validation
 
