@@ -12,6 +12,10 @@ npx skills add https://github.com/bleedkagax/otter_skills --skill terminal-diagr
 npx skills add https://github.com/bleedkagax/otter_skills --skill setup-fastfetch-theme
 ```
 
+```bash
+npx skills add https://github.com/bleedkagax/otter_skills --skill codex-subagent-nicknames
+```
+
 Global install (available across all projects):
 
 ```bash
@@ -58,6 +62,16 @@ Install Fastfetch on macOS and apply the `decksters-lab/fastfetch` theme with mi
 - Uses `kitty-direct` plus explicit logo sizing for Ghostty image rendering
 - Includes optional `~/.zshrc` auto-run guidance
 
+### codex-subagent-nicknames
+
+Configure Codex CLI subagent display names through `nickname_candidates` in `~/.codex/config.toml`.
+
+**Features**:
+- Confirms the local Codex build accepts the `nickname_candidates` key
+- Adds or updates a top-level nickname list without disturbing other settings
+- Explains restart expectations for newly spawned subagents
+- Includes practical naming guidance for themed nickname sets
+
 ## Manual Install
 
 If not using `npx skills`, copy directly:
@@ -68,6 +82,9 @@ cp -r skills/terminal-diagrams ~/.claude/skills/
 
 # Skill (install Fastfetch + decksters-lab config on macOS)
 cp -r skills/setup-fastfetch-theme ~/.claude/skills/
+
+# Skill (configure Codex subagent nicknames)
+cp -r skills/codex-subagent-nicknames ~/.claude/skills/
 
 # Slash command (/diagram)
 cp skills/terminal-diagrams/diagram-command.md ~/.claude/commands/diagram.md
