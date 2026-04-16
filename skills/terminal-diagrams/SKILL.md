@@ -5,17 +5,28 @@ description: Render Mermaid diagrams as Unicode art in the terminal using termai
 
 # Diagram
 
-Render Mermaid diagrams in the terminal via `uvx termaid` (zero-install, pure Python, requires Python >= 3.11).
+Render Mermaid diagrams in the terminal via `uvx termaid` (zero-install after `uv` is installed, pure Python, requires Python >= 3.11).
 
 If the default Python is < 3.11, use `uvx --python 3.11 termaid` (or 3.12/3.13).
 
+## Prerequisite
+
+Check `uvx` before rendering:
+
+```bash
+command -v uvx >/dev/null 2>&1 || brew install uv
+```
+
+On macOS, `uvx` comes from the `uv` Homebrew package. Install it before invoking `scripts/termaid-render.sh` or raw `uvx termaid` commands.
+
 ## Workflow
 
-1. Determine the best diagram type from user request or code context
-2. **Language adapt**: use the user's language directly in labels. CJK characters are fully supported since termaid 0.5.0. For bilingual contexts, optionally use `\n` annotation: `A["Quality Gate\n(质量门控)"]`. Response text around the diagram: user's language.
-3. Generate valid Mermaid syntax
-4. Render via pipe to termaid
-5. If output is too wide, re-render with compact options
+1. Ensure `uvx` is available. If missing on macOS, install it with `brew install uv`.
+2. Determine the best diagram type from user request or code context
+3. **Language adapt**: use the user's language directly in labels. CJK characters are fully supported since termaid 0.5.0. For bilingual contexts, optionally use `\n` annotation: `A["Quality Gate\n(质量门控)"]`. Response text around the diagram: user's language.
+4. Generate valid Mermaid syntax
+5. Render via pipe to termaid
+6. If output is too wide, re-render with compact options
 
 ## Rendering
 

@@ -8,6 +8,15 @@
 
 set -eo pipefail
 
+if ! command -v uvx >/dev/null 2>&1; then
+    cat >&2 <<'EOF'
+uvx not found.
+Install uv first, then rerun:
+  brew install uv
+EOF
+    exit 127
+fi
+
 # Auto-detect theme based on macOS appearance
 # Dark  → amber theme (gold lines + gold text, full color)
 # Light → terminal default text + colored structural glyphs
