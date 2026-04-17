@@ -10,7 +10,7 @@ Use this skill when the user wants Codex subagents to appear with custom nicknam
 This skill is specifically for the local Codex CLI config key:
 
 ```toml
-nickname_candidates = ["MapoTofu", "Tteokbokki", "XiaoLongBao"]
+nickname_candidates = ["PekingDuck", "MapoTofu", "DongpoRou"]
 ```
 
 ## Workflow
@@ -25,7 +25,7 @@ sed -n '1,160p' ~/.codex/config.toml
 2. Confirm the config key is accepted by the installed CLI. A safe parse check is:
 
 ```bash
-codex -c 'nickname_candidates=["MapoTofu","Tteokbokki"]' features list
+codex -c 'nickname_candidates=["PekingDuck","MapoTofu"]' features list
 ```
 
 If this command parses normally, the key is recognized by the local build.
@@ -38,15 +38,18 @@ Example:
 model = "gpt-5.4"
 model_reasoning_effort = "high"
 nickname_candidates = [
-  "MapoTofu",
-  "Tteokbokki",
-  "XiaoLongBao",
-  "Bulgogi",
-  "Laksa",
   "PekingDuck",
-  "Takoyaki",
-  "Okonomiyaki",
-  "HokkienMee",
+  "MapoTofu",
+  "DongpoRou",
+  "FotiaoQiang",
+  "LionHead",
+  "BeggarChicken",
+  "SquirrelFish",
+  "WestLakeFish",
+  "WhiteCutChicken",
+  "KungPaoChicken",
+  "TwiceCookedPork",
+  "MeiCaiKouRou",
 ]
 ```
 
@@ -77,7 +80,8 @@ Good nickname sets usually have:
 
 Useful themes:
 
-- foods: `MapoTofu`, `Takoyaki`, `Laksa`
+- Chinese classic dishes (recommended): `PekingDuck`, `MapoTofu`, `DongpoRou`
+- foods: `PekingDuck`, `MapoTofu`, `LionHead`
 - trees: `Juniper`, `Maple`, `Cedar`
 - weather: `Nimbus`, `Cirrus`, `Monsoon`
 - colors/minerals: `Amber`, `Onyx`, `Coral`
