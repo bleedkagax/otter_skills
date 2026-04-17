@@ -68,7 +68,7 @@ Configure Codex subagent display names through `agents.<name>.nickname_candidate
 
 **Features**:
 - Confirms the local Codex build accepts the documented nickname config shape
-- Adds or updates a nickname list under the correct `agents.<name>` scope without disturbing other settings
+- Adds or updates a nickname list under the correct `agents.<name>` scope, including the required role description
 - Explains restart expectations for newly spawned subagents
 - Includes practical naming guidance for themed nickname sets
 

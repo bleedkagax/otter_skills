@@ -11,6 +11,7 @@ This skill is specifically for the documented Codex config shape:
 
 ```toml
 [agents.default]
+description = "General-purpose coding agent for everyday implementation and debugging tasks."
 nickname_candidates = ["PekingDuck", "MapoTofu", "DongpoRou"]
 ```
 
@@ -26,7 +27,7 @@ sed -n '1,160p' ~/.codex/config.toml
 2. Confirm the config shape is accepted by the installed build. A safe parse check is:
 
 ```bash
-codex -c '[agents.default]\nnickname_candidates=["PekingDuck","MapoTofu"]' features list
+codex -c '[agents.default]\ndescription="General-purpose coding agent."\nnickname_candidates=["PekingDuck","MapoTofu"]' features list
 ```
 
 If this command parses normally, the config shape is recognized by the local build.
@@ -42,6 +43,7 @@ model = "gpt-5.4"
 model_reasoning_effort = "high"
 
 [agents.default]
+description = "General-purpose coding agent for everyday implementation and debugging tasks."
 nickname_candidates = [
   "PekingDuck",
   "MapoTofu",
@@ -69,6 +71,7 @@ codex features list
 ## Editing Rules
 
 - In shared config, `nickname_candidates` belongs under `agents.<name>`, not at the top level.
+- In shared config, the agent role also needs a `description`; otherwise Codex will warn that the role definition is malformed.
 - In a custom agent file under `.codex/agents/*.toml`, `nickname_candidates` can live directly beside `name`.
 - Preserve existing user settings; only add or update the relevant nickname array.
 - Prefer short, visually distinct nicknames.
