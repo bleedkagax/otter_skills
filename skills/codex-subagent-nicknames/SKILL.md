@@ -1,15 +1,16 @@
 ---
 name: codex-subagent-nicknames
-description: Configure Codex CLI subagent display names via `nickname_candidates` in `~/.codex/config.toml`. Use when the user asks to name subagents, customize Codex agent nicknames, set food-style codenames, or update the local Codex TOML so spawned agents stop using generic labels.
+description: Configure Codex subagent display names via `agents.<name>.nickname_candidates` in `~/.codex/config.toml` or `.codex/agents/*.toml`. Use when the user asks to name subagents, customize Codex agent nicknames, set food-style codenames, or update the local Codex TOML so spawned agents stop using generic labels.
 ---
 
 # Codex Subagent Nicknames
 
 Use this skill when the user wants Codex subagents to appear with custom nicknames instead of generic labels.
 
-This skill is specifically for the local Codex CLI config key:
+This skill is specifically for the documented Codex config shape:
 
 ```toml
+[agents.default]
 nickname_candidates = ["PekingDuck", "MapoTofu", "DongpoRou"]
 ```
 
@@ -22,21 +23,25 @@ codex --version
 sed -n '1,160p' ~/.codex/config.toml
 ```
 
-2. Confirm the config key is accepted by the installed CLI. A safe parse check is:
+2. Confirm the config shape is accepted by the installed build. A safe parse check is:
 
 ```bash
-codex -c 'nickname_candidates=["PekingDuck","MapoTofu"]' features list
+codex -c '[agents.default]\nnickname_candidates=["PekingDuck","MapoTofu"]' features list
 ```
 
-If this command parses normally, the key is recognized by the local build.
+If this command parses normally, the config shape is recognized by the local build.
 
-3. Edit `~/.codex/config.toml` and add or update a top-level `nickname_candidates` array.
+3. Edit `~/.codex/config.toml` and add or update `nickname_candidates` under the target agent.
+
+Use `[agents.default]` when you want a nickname pool for the default spawned agent type. For custom agents defined in `.codex/agents/*.toml`, put `nickname_candidates` directly in that agent file next to `name`, `model`, and related keys.
 
 Example:
 
 ```toml
 model = "gpt-5.4"
 model_reasoning_effort = "high"
+
+[agents.default]
 nickname_candidates = [
   "PekingDuck",
   "MapoTofu",
@@ -63,8 +68,9 @@ codex features list
 
 ## Editing Rules
 
-- `nickname_candidates` is a top-level config key, not `agents.nickname_candidates`.
-- Preserve existing user settings; only add or update the nickname array.
+- In shared config, `nickname_candidates` belongs under `agents.<name>`, not at the top level.
+- In a custom agent file under `.codex/agents/*.toml`, `nickname_candidates` can live directly beside `name`.
+- Preserve existing user settings; only add or update the relevant nickname array.
 - Prefer short, visually distinct nicknames.
 - Use ASCII unless the user explicitly wants Unicode names.
 - If the config file is outside the writable sandbox, request approval before writing.
@@ -96,4 +102,5 @@ Avoid:
 ## Notes
 
 - In current Codex builds, nickname changes may only become visible for newly spawned subagents.
+- The `name` field still controls which agent is spawned; `nickname_candidates` only affects display labels.
 - If the user also wants the setting captured as reusable team convention, add the chosen nickname set to dotfiles or a bootstrap script separately.

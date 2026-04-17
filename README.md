@@ -64,11 +64,11 @@ Install Fastfetch on macOS and apply the `decksters-lab/fastfetch` theme with mi
 
 ### codex-subagent-nicknames
 
-Configure Codex CLI subagent display names through `nickname_candidates` in `~/.codex/config.toml`.
+Configure Codex subagent display names through `agents.<name>.nickname_candidates` in `~/.codex/config.toml` or a custom agent file.
 
 **Features**:
-- Confirms the local Codex build accepts the `nickname_candidates` key
-- Adds or updates a top-level nickname list without disturbing other settings
+- Confirms the local Codex build accepts the documented nickname config shape
+- Adds or updates a nickname list under the correct `agents.<name>` scope without disturbing other settings
 - Explains restart expectations for newly spawned subagents
 - Includes practical naming guidance for themed nickname sets
 
